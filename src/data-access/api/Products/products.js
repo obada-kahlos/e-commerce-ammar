@@ -3,22 +3,21 @@ import { gql } from "graphql-request";
 
 const extendedApi = apiSlice.injectEndpoints({
   endpoints: (build) => ({
-    getUsers: build.query({
+    getProducts: build.query({
       query: () => ({
         url: "",
         method: "POST",
         body: {
           query: gql`
             query MyQuery {
-              users {
-                name
-                primary_Position
-                hono
-                gender
-                email
-                backup_email
-                dob
+              Products {
                 id
+                product_Image
+                product_count
+                product_description
+                product_name
+                product_price
+                product_status
               }
             }
           `,
@@ -29,4 +28,4 @@ const extendedApi = apiSlice.injectEndpoints({
   overrideExisting: false,
 });
 
-export const { useGetUsersQuery } = extendedApi;
+export const { useGetProductsQuery } = extendedApi;
