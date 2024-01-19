@@ -7,7 +7,8 @@ import {
   DialogFooter,
 } from "@material-tailwind/react";
 
-export const DialogCustom = ({ open, handleOpen }) => {
+
+export const DialogCustom = ({ open, handleOpen, children }) => {
   return (
     <>
       <Dialog
@@ -19,20 +20,8 @@ export const DialogCustom = ({ open, handleOpen }) => {
         }}
       >
         <DialogHeader>New Product</DialogHeader>
-        <DialogBody></DialogBody>
-        <DialogFooter>
-          <Button
-            variant="text"
-            color="red"
-            onClick={handleOpen}
-            className="mr-1"
-          >
-            <span>Cancel</span>
-          </Button>
-          <Button variant="gradient" color="green" onClick={handleOpen}>
-            <span>Submit</span>
-          </Button>
-        </DialogFooter>
+        <DialogBody style={{ overflow: 'auto', maxHeight: '500px' }}>{children}</DialogBody>
+
       </Dialog>
     </>
   );
