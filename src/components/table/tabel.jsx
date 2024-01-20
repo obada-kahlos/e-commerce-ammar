@@ -1,5 +1,5 @@
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
-import { PencilIcon, UserPlusIcon } from "@heroicons/react/24/solid";
+import { PencilIcon, TrashIcon, UserPlusIcon } from "@heroicons/react/24/solid";
 import {
   Card,
   CardHeader,
@@ -65,7 +65,7 @@ const TABLE_ROWS = [
   },
 ];
 
-export const ProductTable = ({ TABLE_HEAD, handleOpenPopup, TABLE_ROWS }) => {
+export const ProductTable = ({ TABLE_HEAD, handleOpenPopup, TABLE_ROWS, handelSetProductId }) => {
   return (
     <Card className="h-full w-full">
       <CardHeader floated={false} shadow={false} className="rounded-none">
@@ -184,19 +184,15 @@ export const ProductTable = ({ TABLE_HEAD, handleOpenPopup, TABLE_ROWS }) => {
                         />
                       </div>
                     </td>
-                    {/* <td className={classes}>
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="font-normal"
-                      >
-                        {product_status}
-                      </Typography>
-                    </td> */}
                     <td className={classes}>
-                      <Tooltip content="Edit User">
+                      <Tooltip content="Edit Product">
                         <IconButton variant="text">
                           <PencilIcon className="h-4 w-4" />
+                        </IconButton>
+                      </Tooltip>
+                      <Tooltip content="Delete Product">
+                        <IconButton variant="text" onClick={() => handelSetProductId(id)}>
+                          <TrashIcon className="h-4 w-4" />
                         </IconButton>
                       </Tooltip>
                     </td>

@@ -8,7 +8,7 @@ import {
 } from "@material-tailwind/react";
 
 
-export const DialogCustom = ({ open, handleOpen, children }) => {
+export const DialogCustom = ({ open, handleOpen, children, header }) => {
   return (
     <>
       <Dialog
@@ -19,8 +19,8 @@ export const DialogCustom = ({ open, handleOpen, children }) => {
           unmount: { scale: 0.9, y: -100 },
         }}
       >
-        <DialogHeader>New Product</DialogHeader>
-        <DialogBody style={{ overflow: 'auto', maxHeight: '500px' }}>{children}</DialogBody>
+        <DialogHeader>{header}</DialogHeader>
+        <DialogBody style={{ overflow: 'auto', maxHeight: '500px', padding: '10px' }}>{children}</DialogBody>
 
       </Dialog>
     </>

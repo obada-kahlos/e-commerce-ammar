@@ -1,8 +1,8 @@
 import React from "react";
 import { ProductTable } from "../../components/table/tabel";
 import { DialogCustom } from "../../components/popup/popup";
-import { useAddProductMutation, useGetProductsQuery } from "../../data-access/api/Products/products";
-import { Button, DialogFooter, Option, Select, Textarea } from "@material-tailwind/react";
+import { useAddProductMutation, useDeleteProductMutation, useGetProductsQuery } from "../../data-access/api/Products/products";
+import { Button, DialogFooter, Option, Select, Textarea, Typography } from "@material-tailwind/react";
 // import { Input } from "../../components/input/input";
 import { FileInput } from "../../components/file-input/file-input";
 import { useForm, Controller } from "react-hook-form";
@@ -23,12 +23,15 @@ export const Products = () => {
     "Product status",
     ""
   ];
-  const [open, setOpen] = React.useState(false);
+  const [addPopup, setAddPopup] = React.useState(false);
+  const [deletePopup, setDeletePopup] = React.useState(false);
 
-  const handleOpen = () => setOpen(!open);
+  const handleOpen = () => setAddPopup(!addPopup);
+
 
   const { data } = useGetProductsQuery({});
-  const [addProduct] = useAddProductMutation({})
+  const [addProduct, { isLoading: isLoadingAddProduct }] = useAddProductMutation({})
+  const [deleteProduct, { isLoading: isLoadingDeletePopup }] = useDeleteProductMutation({})
 
   const {
     handleSubmit,
@@ -43,7 +46,7 @@ export const Products = () => {
   const handleImageUpload = async (event) => {
     const file = event.target.files[0];
     const options = {
-      maxSizeMB: 1,
+      maxSizeMB: 0.1,
       maxWidthOrHeight: 1920,
       useWebWorker: true
     };
@@ -75,14 +78,45 @@ export const Products = () => {
     setImage('')
   };
 
+  const [productId, setProductId] = React.useState('')
+  const handelSetProductId = (id) => {
+    setProductId(id);
+    setDeletePopup(!deletePopup)
+  }
+  const handelCloseDeletePopup = (id) => {
+    setProductId('');
+    setDeletePopup(!deletePopup)
+  }
+  console.log({ productId })
+
   return (
     <div>
       <ProductTable
         TABLE_HEAD={TABLE_HEAD}
         TABLE_ROWS={data?.data?.Products}
         handleOpenPopup={handleOpen}
+        handelSetProductId={handelSetProductId}
       />
-      <DialogCustom open={open} handleOpen={handleOpen} >
+      <DialogCustom header={'Delete Product'} open={deletePopup} handleOpen={handelSetProductId} >
+        <Typography> Are you sure! </Typography>
+        <DialogFooter>
+          <Button
+            variant="text"
+            color="red"
+            onClick={handelCloseDeletePopup}
+            className="mr-1"
+          >
+            <span>Cancel</span>
+          </Button>
+          <Button variant="gradient" onClick={async () => {
+            await deleteProduct({ id: productId })
+            setDeletePopup(!deletePopup)
+          }} disabled={isLoadingDeletePopup} type="submit" color="green">
+            <span>Delete</span>
+          </Button>
+        </DialogFooter>
+      </DialogCustom>
+      <DialogCustom header={"New Product"} open={addPopup} handleOpen={handleOpen} >
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="grid grid-cols-12 gap-8">
             <div className="col-span-12">
@@ -162,23 +196,14 @@ export const Products = () => {
               />
             </div>
 
-
             <div className="col-span-12">
-              {/* <Controller
-                name="product_Image"
-                control={control}
-                defaultValue=""
-                render={({ field }) => ( */}
               <Input
-                // {...field}
                 label={"Product Name"}
                 type={"file"}
                 onChange={handleImageUpload}
                 accept='image/*'
                 className={"Product_name"}
               />
-              {/* )} */}
-              {/* /> */}
             </div>
             {
               image ?
@@ -196,7 +221,7 @@ export const Products = () => {
             >
               <span>Cancel</span>
             </Button>
-            <Button variant="gradient" type="submit" color="green">
+            <Button variant="gradient" disabled={isLoadingAddProduct} type="submit" color="green">
               <span>Submit</span>
             </Button>
           </DialogFooter>

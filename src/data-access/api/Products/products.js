@@ -8,7 +8,7 @@ const extendedApi = apiSlice.injectEndpoints({
         url: "",
         method: "POST",
         body: {
-          query: gql`
+          query: `
             query MyQuery {
               Products {
                 id
@@ -30,7 +30,7 @@ const extendedApi = apiSlice.injectEndpoints({
         url: "",
         method: "POST",
         body: {
-          query: gql`
+          query: `
             mutation MyMutation($payload: Products_insert_input!) {
               insert_Products_one(object: $payload) {
                 id
@@ -44,7 +44,30 @@ const extendedApi = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["Products"],
     }),
+    deleteProduct: builder.mutation({
+      query: ({ id }) => ({
+        url: "",
+        method: "POST",
+        body: {
+          query: `
+            mutation MyMutation($id : uuid!) {
+              delete_Products_by_pk(id: $id) {
+                id
+              }
+            }          
+          `,
+          variables: {
+            id,
+          },
+        },
+      }),
+      invalidatesTags: ["Products"],
+    }),
   }),
 });
 
-export const { useGetProductsQuery, useAddProductMutation } = extendedApi;
+export const {
+  useGetProductsQuery,
+  useAddProductMutation,
+  useDeleteProductMutation,
+} = extendedApi;
